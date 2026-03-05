@@ -30,22 +30,18 @@ async def test_get_tasks(client):
 
     assert isinstance(data, list)
 
-
 @pytest.mark.asyncio
 async def test_update_task(client):
-
-    # First create task
     payload = {
         "title": "Learn FastAPI",
         "description": "Understand async APIs"
     }
 
     create_response = await client.post("/tasks", json=payload)
+    task_id = create_response.json()["data"]["id"]  # <-- 'data' key
 
-    task_id = create_response.json()["data"]["id"]
-
-    # Update task
     update_payload = {
+        "task_id": task_id,
         "title": "Learn FastAPI - Updated",
         "description": "Understand async APIs in depth"
     }
@@ -54,11 +50,9 @@ async def test_update_task(client):
 
     assert update_response.status_code == 200
 
-    updated_data = update_response.json()["data"]
-
+    updated_data = update_response.json()["data"]  # <-- 'data' key
     assert updated_data["title"] == update_payload["title"]
     assert updated_data["description"] == update_payload["description"]
-
 
 @pytest.mark.asyncio
 async def test_delete_task(client):
