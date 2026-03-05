@@ -59,7 +59,7 @@ async def test_delete_task(client):
     # First, create a task to delete
     payload = {
         "title": "Learn FastAPI",
-        "description": "Understand async APIs"
+        "description": "Understand async APIs and Pytest"
     }
     create_response = await client.post("/tasks", json=payload)
     task_id = create_response.json()["id"]
