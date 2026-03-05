@@ -72,5 +72,5 @@ async def test_delete_task(client):
     # Verify the task is deleted
     get_response = await client.get("/tasks")
     tasks = get_response.json()
-    assert all(task["id"] != task_id for task in tasks)
+    assert all(task["id"] != task_id for task in tasks) # Ensure the deleted task is not in the list of tasks
 
