@@ -6,6 +6,11 @@ import asyncio
 
 app = FastAPI()
 
+@app.on_event("startup")
+async def startup():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
 @app.get("/Home")
 async def home():
     return {"message":"Welcome to Task Management API"}
@@ -13,14 +18,10 @@ async def home():
 
 
 
-async def init_db():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
 
 
-if __name__ == "__main__":
-    asyncio.run(init_db())
-    print("Database initialized successfully.")
+
+
 
 
 app.include_router(router=router, tags=["Tasks"])
