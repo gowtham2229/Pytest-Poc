@@ -28,8 +28,7 @@ async def get_task_service(db):
         }
         return{
         'status':1,
-        'message':'Task retrieved successfully',
-        'data':res
+        'message':'Task retrieved successfully'
     }
     except Exception as e:
           raise HTTPException(status_code=500, detail=str(e))
