@@ -24,8 +24,10 @@ async def test_get_tasks(client):
     data = response.json()
     assert "status" in data
     assert "message" in data
+    assert "data" in data  # data list of tasks
     assert data["status"] == 1
     assert data["message"] == "Task retrieved successfully"
+    assert isinstance(data["data"], list)
 
 # -------------------------------
 # Test updating a task
@@ -38,7 +40,7 @@ async def test_update_task(client):
 
     # Get the task ID from GET /tasks
     get_response = await client.get("/tasks")
-    tasks = get_response.json().get("data", [])  # Only update if data exists
+    tasks = get_response.json().get("data", [])
     assert tasks, "No tasks found to update"
     task_id = tasks[0]["id"]
 
@@ -76,7 +78,8 @@ async def test_delete_task(client):
     task_id = tasks[0]["id"]
 
     # Delete the task
-    delete_response = await client.delete(f"/tasks/{task_id}")
+    delete_payload = {"task_id": task_id}
+    delete_response = await client.delete("/tasks", json=delete_payload)
     assert delete_response.status_code == 200
 
     deleted_data = delete_response.json()
