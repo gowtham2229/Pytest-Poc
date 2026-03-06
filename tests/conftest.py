@@ -1,7 +1,7 @@
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
 from asgi_lifespan import LifespanManager
-from ..main import app
+from main import app
 
 
 @pytest_asyncio.fixture
