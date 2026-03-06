@@ -1,4 +1,5 @@
 import pytest
+
 @pytest.mark.asyncio
 async def test_create_task(client):
     payload = {"title": "Learn FastAPI", "description": "Understand async APIs"}
@@ -7,7 +8,6 @@ async def test_create_task(client):
     assert response.status_code == 200
 
     data = response.json()
-    # Only status and message for create
     assert "status" in data
     assert "message" in data
     assert data["status"] == 1
@@ -22,7 +22,6 @@ async def test_get_tasks(client):
     assert response.status_code == 200
 
     data = response.json()
-    # Only status and message for get
     assert "status" in data
     assert "message" in data
     assert data["status"] == 1
@@ -33,10 +32,15 @@ async def test_get_tasks(client):
 # -------------------------------
 @pytest.mark.asyncio
 async def test_update_task(client):
-    # First, create a task
+    # Create a task first
     payload = {"title": "Learn FastAPI", "description": "Understand async APIs"}
-    create_response = await client.post("/tasks", json=payload)
-    task_id = create_response.json().get("id")  # Optional: might be None if create doesn't return id
+    await client.post("/tasks", json=payload)
+
+    # Get the task ID from GET /tasks
+    get_response = await client.get("/tasks")
+    tasks = get_response.json().get("data", [])  # Only update if data exists
+    assert tasks, "No tasks found to update"
+    task_id = tasks[0]["id"]
 
     # Update the task
     update_payload = {
@@ -48,7 +52,6 @@ async def test_update_task(client):
     assert update_response.status_code == 200
 
     updated_data = update_response.json()
-    # For update, data field is present
     assert "status" in updated_data
     assert "message" in updated_data
     assert "data" in updated_data
@@ -62,18 +65,27 @@ async def test_update_task(client):
 # -------------------------------
 @pytest.mark.asyncio
 async def test_delete_task(client):
-    # Create a task to delete
+    # Create a task first
     payload = {"title": "Learn FastAPI", "description": "Understand async APIs and Pytest"}
-    create_response = await client.post("/tasks", json=payload)
-    task_id = create_response.json().get("id")  # Optional: might be None
+    await client.post("/tasks", json=payload)
+
+    # Get the task ID from GET /tasks
+    get_response = await client.get("/tasks")
+    tasks = get_response.json().get("data", [])
+    assert tasks, "No tasks found to delete"
+    task_id = tasks[0]["id"]
 
     # Delete the task
     delete_response = await client.delete(f"/tasks/{task_id}")
     assert delete_response.status_code == 200
 
     deleted_data = delete_response.json()
-    # Only status and message for delete
     assert "status" in deleted_data
     assert "message" in deleted_data
     assert deleted_data["status"] == 1
     assert deleted_data["message"] == "Task deleted successfully"
+
+    # Verify the task is gone
+    verify_response = await client.get("/tasks")
+    remaining_tasks = verify_response.json().get("data", [])
+    assert all(task["id"] != task_id for task in remaining_tasks)
