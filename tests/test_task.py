@@ -6,7 +6,7 @@ async def test_create_task(client):
     payload = {"title": "Learn FastAPI", "description": "Understand async APIs"}
 
     response = await client.post("/create_tasks", json=payload)
-    assert response.status_code == 200
+    assert response.status_code == 200 # Check for 200 OK
 
     data = response.json()
     assert "status" in data
