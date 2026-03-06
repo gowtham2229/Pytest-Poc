@@ -30,7 +30,7 @@ async def update_task_route(task: TaskUpdate , db:AsyncSession = Depends(get_db)
     except Exception as e:
         raise e
 
-@router.delete("/tasks/{task_id}")
+@router.delete("/tasks")
 async def delete_task_route(task: GetDeleteTask , db:AsyncSession = Depends(get_db)):
     try:
         return await delete_task_service(task , db)
