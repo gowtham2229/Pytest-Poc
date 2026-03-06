@@ -1,4 +1,6 @@
 import pytest
+import json 
+# -------------------------------
 @pytest.mark.asyncio
 async def test_create_task(client):
     payload = {"title": "Learn FastAPI", "description": "Understand async APIs"}
@@ -76,9 +78,9 @@ async def test_delete_task(client):
     assert tasks, "No tasks found to delete"
     task_id = tasks[0]["id"]
 
-    # Delete the task (send task_id in the body)
+    # Delete the task (use request() to send JSON body)
     delete_payload = {"task_id": task_id}
-    delete_response = await client.delete("/tasks", json=delete_payload)
+    delete_response = await client.request("DELETE", "/tasks", json=delete_payload)
     assert delete_response.status_code == 200
 
     deleted_data = delete_response.json()
