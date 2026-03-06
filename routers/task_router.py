@@ -9,28 +9,28 @@ router = APIRouter()
 
 
 
-@router.post("/tasks")
+@router.post("/create_tasks")
 async def create_task_route(task:TaskCreate , db:AsyncSession = Depends(get_db)):
     try:
         return await create_task_service(task , db)
     except Exception as e:
         raise e
 
-@router.get("/tasks")
+@router.get("/get_tasks")
 async def get_task_route( db:AsyncSession = Depends(get_db)):
     try:
         return await get_task_service(db)
     except Exception as e:
         raise e
     
-@router.put("/tasks/{task_id}")
+@router.put("/update_task")
 async def update_task_route(task: TaskUpdate , db:AsyncSession = Depends(get_db)):
     try:
         return await update_task_service(task , db)
     except Exception as e:
         raise e
 
-@router.delete("/tasks")
+@router.delete("/delete_tasks")
 async def delete_task_route(task: GetDeleteTask , db:AsyncSession = Depends(get_db)):
     try:
         return await delete_task_service(task , db)
