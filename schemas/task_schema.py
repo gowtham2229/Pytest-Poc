@@ -57,4 +57,14 @@ async def delete_task(task , db):
     except Exception as e:
         await db.rollback()
         raise e
-    return False
+    
+async def get_task_by_id(task , db):
+    try :
+        task_by_id = await db.execute(select(Task).where(Task.id == task.task_id))
+        res = task_by_id.scalars().first()
+        return res
+    except Exception as e:
+        raise e
+    
+
+

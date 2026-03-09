@@ -93,3 +93,31 @@ async def test_delete_task(client):
     verify_response = await client.get("/get_tasks")
     remaining_tasks = verify_response.json().get("data", [])
     assert all(task["id"] != task_id for task in remaining_tasks)
+
+# -------------------------------
+# Test retrieving a task by ID
+@pytest.mark.asyncio
+async def test_get_task_by_id(client):
+    # Create a task first
+    payload = {"title": "Learn FastAPI", "description": "Understand async APIs and Pytest"}
+    await client.post("/create_tasks", json=payload)
+
+    # Get the task ID from GET /get_tasks
+    get_response = await client.get("/get_tasks")
+    tasks = get_response.json().get("data", [])
+    assert tasks, "No tasks found to retrieve by ID"
+    task_id = tasks[0]["id"]
+
+    # Retrieve the task by ID
+    get_by_id_payload = {"task_id": task_id}
+    get_by_id_response = await client.post("/get_task_by_id", json=get_by_id_payload)
+
+    assert get_by_id_response.status_code == 200
+
+    task_data = get_by_id_response.json()
+    assert "status" in task_data
+    assert "message" in task_data
+    assert "data" in task_data
+    assert task_data["status"] == 1
+    assert task_data["message"] == "Task retrieved successfully"
+    assert task_data["data"]["id"] == task_id

@@ -1,7 +1,7 @@
 from utilities import get_db , AsyncSession 
 from config import Task
 from model_states import TaskCreate , TaskUpdate , GetTask , GetDeleteTask
-from services import create_task_service , get_task_service , update_task_service , delete_task_service
+from services import create_task_service , get_task_service , update_task_service , delete_task_service , get_task_by_id_service
 from fastapi import APIRouter , Depends
 from fastapi import FastAPI
 
@@ -37,3 +37,12 @@ async def delete_task_route(task: GetDeleteTask , db:AsyncSession = Depends(get_
     except Exception as e:
         raise e
 
+
+@router.post("/get_task_by_id")
+async def get_task_by_id_route(task: GetTask , db:AsyncSession = Depends(get_db)):
+    try:
+        return await get_task_by_id_service(task , db)
+    except Exception as e:
+        raise e
+
+ 
