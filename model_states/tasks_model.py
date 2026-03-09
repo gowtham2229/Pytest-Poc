@@ -9,6 +9,7 @@ class TaskUpdate(BaseModel):
     task_id : int
     title: str
     description: str
+
    
 
 class TaskResponse(BaseModel):

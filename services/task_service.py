@@ -1,4 +1,4 @@
-from schemas import create_task , get_task , update_task , delete_task
+from schemas import create_task , get_task , update_task , delete_task , get_task_by_id
 from model_states import TaskCreate , TaskUpdate , GetTask , GetDeleteTask
 from fastapi import HTTPException
 
@@ -65,4 +65,20 @@ async def delete_task_service(task , db):
     except Exception as e:
           raise HTTPException(status_code=500, detail=str(e))
 
+    
+async def get_task_by_id_service(task , db):
+    try : 
+        res = await get_task_by_id(task , db)
+        if not res:
+           return{
+            'status':0,
+            'message':'Task not found'
+        }
+        return{
+        'status':1,
+        'message':'Task retrieved successfully',
+        "data": res.__dict__
+    }
+    except Exception as e:
+          raise HTTPException(status_code=500, detail=str(e))
     
