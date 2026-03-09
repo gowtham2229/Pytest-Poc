@@ -38,7 +38,7 @@ async def delete_task_route(task: GetDeleteTask , db:AsyncSession = Depends(get_
         raise e
 
 
-@router.get("/get_task_by_id")
+@router.post("/get_task_by_id")
 async def get_task_by_id_route(task: GetTask , db:AsyncSession = Depends(get_db)):
     try:
         return await get_task_by_id_service(task , db)

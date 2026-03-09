@@ -96,7 +96,6 @@ async def test_delete_task(client):
 
 # -------------------------------
 # Test retrieving a task by ID
-
 @pytest.mark.asyncio
 async def test_get_task_by_id(client):
     # Create a task first
@@ -111,7 +110,8 @@ async def test_get_task_by_id(client):
 
     # Retrieve the task by ID
     get_by_id_payload = {"task_id": task_id}
-    get_by_id_response = await client.get("/get_task_by_id", json=get_by_id_payload)
+    get_by_id_response = await client.post("/get_task_by_id", json=get_by_id_payload)
+
     assert get_by_id_response.status_code == 200
 
     task_data = get_by_id_response.json()
